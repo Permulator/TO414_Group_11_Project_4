@@ -1,0 +1,19 @@
+---
+title: "TO414_Group_11_Project_4"
+author: "Jack Perlmuter, Ross Coyne, Logan Sabella, Mason Wicklander, Antonio De Llergo"
+date: "2/21/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Importing the Data Set and Cleaning It
+```{r}
+stroke <- read.csv("healthcare-dataset-stroke-data.csv")
+
+summary(stroke)
+str(stroke)
+```
+
