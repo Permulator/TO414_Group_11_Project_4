@@ -13,7 +13,29 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 stroke <- read.csv("healthcare-dataset-stroke-data.csv")
 
+#We decided to set ID to NULL, as it is an irrelevant variable
+stroke$id <- NULL
+
+#We set the following columns as factors instead of characters
+stroke$gender <- as.factor(stroke$gender)
+stroke$smoking_status <- as.factor(stroke$smoking_status)
+stroke$ever_married <- as.factor(stroke$ever_married)
+stroke$work_type <- as.factor(stroke$work_type)
+stroke$Residence_type <- as.factor(stroke$Residence_type)
+
+#We set bmi to be numeric, as it was a character to begin. Then, we removed all NAs and replaced them with the mean (difference between mean and median was negligible)
+stroke$bmi <- as.numeric(stroke$bmi)
+stroke$bmi <- ifelse(is.na(stroke$bmi), mean(stroke$bmi, na.rm = T),stroke$bmi)
+
+#Observing summary and structure of the cleaned data
 summary(stroke)
 str(stroke)
+```
+
+# Asking a Business Question
+Can we predict the likelihood of a stroke amongst individuals based on their lifestyle? We intend to use this model to help physicians warn at-risk patients.
+
+```{r}
+
 ```
 
