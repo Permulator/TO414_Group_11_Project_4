@@ -9,8 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Laying out the Problem
-We have chosen 
-Can we predict the likelihood of a stroke amongst individuals based on their lifestyle? We intend to use this model to help physicians warn at-risk patients.
+We have chosen a data set that highlights whether or not patients had strokes and other associated information. We intend to build a model that can accurately predict whether or not a patient will have a stroke based on the presence of certain dependent variables (such as gender, heart disease, bmi). The business implications of this are for physicians to be able to plug their patients' information into our model and be able to predict whether or not the patient is going to have a stroke. As a result, patients can be made aware of their potential risk of stroke and stroke deaths can be prevented.
 
 
 # Importing the Data Set and Cleaning It
