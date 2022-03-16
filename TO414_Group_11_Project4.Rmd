@@ -61,5 +61,8 @@ summary(newlogitmodel)
 ```{r}
 probit.model <- glm(stroke ~ ., data = stroke, family = binomial(link="probit"))
 summary(probit.model)
+
+newprobitmodel <- glm(stroke ~ age + hypertension + work_type + avg_glucose_level, data = stroke, family = binomial(link="probit"))
+summary(newprobitmodel)
 ```
 
