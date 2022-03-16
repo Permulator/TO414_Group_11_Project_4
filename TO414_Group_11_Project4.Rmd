@@ -8,10 +8,17 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Laying out the Problem
+We have chosen a data set that highlights whether or not patients had strokes and other associated information. We intend to build a model that can accurately predict whether or not a patient will have a stroke based on the presence of certain dependent variables (such as gender, heart disease, bmi). The business implications of this are for physicians to be able to plug their patients' information into our model and be able to predict whether or not the patient is going to have a stroke. As a result, patients can be made aware of their potential risk of stroke and stroke deaths can be prevented.
+
 
 # Importing the Data Set and Cleaning It
 ```{r}
 stroke <- read.csv("healthcare-dataset-stroke-data.csv")
+
+#Observing summary and structure of data to identify what we need to clean
+summary(stroke)
+str(stroke)
 
 #We decided to set ID to NULL, as it is an irrelevant variable
 stroke$id <- NULL
@@ -23,7 +30,7 @@ stroke$ever_married <- as.factor(stroke$ever_married)
 stroke$work_type <- as.factor(stroke$work_type)
 stroke$Residence_type <- as.factor(stroke$Residence_type)
 
-#We set bmi to be numeric, as it was a character to begin. Then, we removed all NAs and replaced them with the mean (difference between mean and median was negligible)
+#We set bmi to be numeric, as it was a character to begin. Then, we removed all NAs and replaced them with the mean (difference between mean and median was negligible, so we decided to preserve the mean)
 stroke$bmi <- as.numeric(stroke$bmi)
 stroke$bmi <- ifelse(is.na(stroke$bmi), mean(stroke$bmi, na.rm = T),stroke$bmi)
 
@@ -32,10 +39,39 @@ summary(stroke)
 str(stroke)
 ```
 
-# Asking a Business Question
-Can we predict the likelihood of a stroke amongst individuals based on their lifestyle? We intend to use this model to help physicians warn at-risk patients.
-
+# Understanding the Data
 ```{r}
+num_of_strokes = as.factor(stroke$stroke)
+summary(num_of_strokes)
+```
+
+
+# Building an ANN Model
+```{r}
+library(neuralnet)
+
 
 ```
+
+# Logit
+```{r}
+logit.model <- glm(stroke ~ ., data = stroke, family = "binomial")
+summary(logit.model)
+
+newlogitmodel <- glm(stroke ~ age + hypertension + avg_glucose_level, data = stroke, family = "binomial")
+summary(newlogitmodel)
+```
+
+
+# Probit
+```{r}
+probit.model <- glm(stroke ~ ., data = stroke, family = binomial(link="probit"))
+summary(probit.model)
+
+#We tried a number of interaction variables but none were significant
+newprobitmodel <- glm(stroke ~ age + hypertension + work_type + avg_glucose_level, data = stroke, family = binomial(link="probit"))
+summary(newprobitmodel)
+```
+
+
 
