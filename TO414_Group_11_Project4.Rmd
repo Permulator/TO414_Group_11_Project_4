@@ -47,3 +47,19 @@ library(neuralnet)
 
 ```
 
+# Logit
+```{r}
+logit.model <- glm(stroke ~ ., data = stroke, family = "binomial")
+summary(logit.model)
+
+newlogitmodel <- glm(stroke ~ age + hypertension + avg_glucose_level, data = stroke, family = "binomial")
+summary(newlogitmodel)
+```
+
+
+# Probit
+```{r}
+probit.model <- glm(stroke ~ ., data = stroke, family = binomial(link="probit"))
+summary(probit.model)
+```
+
