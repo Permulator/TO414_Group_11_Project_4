@@ -45,14 +45,6 @@ num_of_strokes = as.factor(stroke$stroke)
 summary(num_of_strokes)
 ```
 
-
-# Building an ANN Model
-```{r}
-library(neuralnet)
-
-
-```
-
 # Logit
 ```{r}
 logit.model <- glm(stroke ~ ., data = stroke, family = "binomial")
@@ -73,5 +65,11 @@ newprobitmodel <- glm(stroke ~ age + hypertension + work_type + avg_glucose_leve
 summary(newprobitmodel)
 ```
 
+# Building an ANN Model
+```{r}
+library(neuralnet)
+
+
+```
 
 
