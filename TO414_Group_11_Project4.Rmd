@@ -39,6 +39,13 @@ summary(stroke)
 str(stroke)
 ```
 
+# Understanding the Data
+```{r}
+num_of_strokes = as.factor(stroke$stroke)
+summary(num_of_strokes)
+```
+
+
 # Building an ANN Model
 ```{r}
 library(neuralnet)
@@ -64,4 +71,6 @@ summary(probit.model)
 newprobitmodel <- glm(stroke ~ age + hypertension + work_type + avg_glucose_level, data = stroke, family = binomial(link="probit"))
 summary(newprobitmodel)
 ```
+
+
 
