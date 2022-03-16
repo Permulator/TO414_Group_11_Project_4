@@ -14,7 +14,7 @@ We have chosen a data set that highlights whether or not patients had strokes an
 
 # Importing the Data Set and Cleaning It
 ```{r}
-stroke <- read.csv("healthcare-dataset-stroke-data.csv")
+stroke_data <- read.csv("healthcare-dataset-stroke-data.csv")
 
 #Observing summary and structure of data to identify what we need to clean
 summary(stroke)
@@ -22,6 +22,10 @@ str(stroke)
 
 #We decided to set ID to NULL, as it is an irrelevant variable
 stroke$id <- NULL
+
+#Renamed column stroke in order to prevent confusion
+stroke$had_stroke = stroke$stroke
+stroke$stroke = NULL
 
 #We set the following columns as factors instead of characters
 stroke$gender <- as.factor(stroke$gender)
@@ -41,20 +45,18 @@ str(stroke)
 
 ## Splitting Data Into Train and Test
 ```{r}
-
 set.seed(17)
 test_set = sample(1:nrow(stroke), round(nrow(stroke)*.3))
 
 stroke_log_test = stroke[test_set,]
 stroke_log_train = stroke[-test_set,]
 
-
 ```
 
 
 # Understanding the Data
 ```{r}
-num_of_strokes = as.factor(stroke$stroke)
+num_of_strokes = as.factor(stroke$had_stroke)
 summary(num_of_strokes)
 
 num_of_heart_disease = as.factor(stroke$heart_disease)
@@ -71,23 +73,27 @@ library(neuralnet)
 
 # Logit
 ```{r}
-logit.model <- glm(stroke ~ ., data = stroke, family = "binomial")
+logit.model <- glm(had_stroke ~ ., data = stroke, family = "binomial")
 summary(logit.model)
 
-newlogitmodel <- glm(stroke ~ age + hypertension + avg_glucose_level, data = stroke, family = "binomial")
+newlogitmodel <- glm(had_stroke ~ age + hypertension + avg_glucose_level, data = stroke, family = "binomial")
 summary(newlogitmodel)
 ```
 
 
 # Probit
 ```{r}
-probit.model <- glm(stroke ~ ., data = stroke, family = binomial(link="probit"))
+probit.model <- glm(had_stroke ~ ., data = stroke, family = binomial(link="probit"))
 summary(probit.model)
 
 #We tried a number of interaction variables but none were significant
-newprobitmodel <- glm(stroke ~ age + hypertension + work_type + avg_glucose_level, data = stroke, family = binomial(link="probit"))
+newprobitmodel <- glm(had_stroke ~ age + hypertension + work_type + avg_glucose_level, data = stroke, family = binomial(link="probit"))
 summary(newprobitmodel)
 ```
 
+
+```{r}
+
+```
 
 
