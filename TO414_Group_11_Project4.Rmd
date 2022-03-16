@@ -39,10 +39,26 @@ summary(stroke)
 str(stroke)
 ```
 
+## Splitting Data Into Train and Test
+```{r}
+
+set.seed(17)
+test_set = sample(1:nrow(stroke), round(nrow(stroke)*.3))
+
+stroke_log_test = stroke[test_set,]
+stroke_log_train = stroke[-test_set,]
+
+
+```
+
+
 # Understanding the Data
 ```{r}
 num_of_strokes = as.factor(stroke$stroke)
 summary(num_of_strokes)
+
+num_of_heart_disease = as.factor(stroke$heart_disease)
+summary(num_of_heart_disease)
 ```
 
 
