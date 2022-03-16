@@ -8,10 +8,18 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Laying out the Problem
+We have chosen 
+Can we predict the likelihood of a stroke amongst individuals based on their lifestyle? We intend to use this model to help physicians warn at-risk patients.
+
 
 # Importing the Data Set and Cleaning It
 ```{r}
 stroke <- read.csv("healthcare-dataset-stroke-data.csv")
+
+#Observing summary and structure of data to identify what we need to clean
+summary(stroke)
+str(stroke)
 
 #We decided to set ID to NULL, as it is an irrelevant variable
 stroke$id <- NULL
@@ -23,7 +31,7 @@ stroke$ever_married <- as.factor(stroke$ever_married)
 stroke$work_type <- as.factor(stroke$work_type)
 stroke$Residence_type <- as.factor(stroke$Residence_type)
 
-#We set bmi to be numeric, as it was a character to begin. Then, we removed all NAs and replaced them with the mean (difference between mean and median was negligible)
+#We set bmi to be numeric, as it was a character to begin. Then, we removed all NAs and replaced them with the mean (difference between mean and median was negligible, so we decided to preserve the mean)
 stroke$bmi <- as.numeric(stroke$bmi)
 stroke$bmi <- ifelse(is.na(stroke$bmi), mean(stroke$bmi, na.rm = T),stroke$bmi)
 
@@ -32,10 +40,10 @@ summary(stroke)
 str(stroke)
 ```
 
-# Asking a Business Question
-Can we predict the likelihood of a stroke amongst individuals based on their lifestyle? We intend to use this model to help physicians warn at-risk patients.
-
+# Building an ANN Model
 ```{r}
+library(neuralnet)
+
 
 ```
 
