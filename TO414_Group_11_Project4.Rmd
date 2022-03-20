@@ -63,6 +63,31 @@ num_of_heart_disease = as.factor(stroke$heart_disease)
 summary(num_of_heart_disease)
 ```
 
+<<<<<<< HEAD
+=======
+# Linear Regression
+```{r}
+linear.model<-lm(had_stroke~.,data=stroke)
+
+summary(linear.model)
+
+plot(linear.model)
+
+new.linear.model<-lm(had_stroke~age+hypertension+heart_disease+ever_married+work_type+avg_glucose_level,data=stroke)
+
+summary(new.linear.model)
+```
+
+
+
+# Building an ANN Model
+```{r}
+library(neuralnet)
+
+
+```
+
+>>>>>>> d0b2f5ac2fe46a3f57a095dce6bcae52db419171
 # Logit
 ```{r}
 logit.model <- glm(had_stroke ~ ., data = stroke, family = "binomial")
@@ -83,6 +108,7 @@ newprobitmodel <- glm(had_stroke ~ age + hypertension + work_type + avg_glucose_
 summary(newprobitmodel)
 ```
 
+<<<<<<< HEAD
 # Building an ANN Model
 ```{r}
 library(neuralnet)
@@ -90,8 +116,21 @@ library(neuralnet)
 
 ```
 
+=======
+# SVM
+>>>>>>> d0b2f5ac2fe46a3f57a095dce6bcae52db419171
 ```{r}
+library(kernlab)
 
+stroke_classifier = ksvm(had_stroke ~., data = stroke_log_train, kernel = "vanilladot")
+stroke_classifier
+
+stroke_predictions = predict(stroke_classifier, stroke_log_test)
+
+table(stroke_predictions, stroke_log_test$had_stroke)
+agreement <- stroke_predictions == stroke_log_test$had_stroke
+table(agreement)
+prop.table(table(agreement))
 ```
 
 
