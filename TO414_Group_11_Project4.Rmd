@@ -63,6 +63,20 @@ num_of_heart_disease = as.factor(stroke$heart_disease)
 summary(num_of_heart_disease)
 ```
 
+# Linear Regression
+```{r}
+linear.model<-lm(had_stroke~.,data=stroke)
+
+summary(linear.model)
+
+plot(linear.model)
+
+new.linear.model<-lm(had_stroke~age+hypertension+heart_disease+ever_married+work_type+avg_glucose_level,data=stroke)
+
+summary(new.linear.model)
+```
+
+
 
 # Building an ANN Model
 ```{r}
