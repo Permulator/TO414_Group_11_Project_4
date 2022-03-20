@@ -157,12 +157,6 @@ confusionMatrix(as.factor(newprobitmodel),as.factor(newlogitmodel), positive = "
 ```
 
 <<<<<<< HEAD
-# Building an ANN Model
-```{r}
-library(neuralnet)
-
-
-```
 
 =======
 # SVM
