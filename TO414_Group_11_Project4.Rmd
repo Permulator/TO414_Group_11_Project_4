@@ -78,7 +78,6 @@ num_of_heart_disease = as.factor(stroke$heart_disease)
 summary(num_of_heart_disease)
 ```
 
-<<<<<<< HEAD
 =======
 # Linear Regression
 ```{r}
@@ -114,12 +113,11 @@ plot(stroke.ann)
 
 # Create a confusion matrix to see model accuracy
 stroke_ann_pred <- predict(stroke.ann,stroke_test_ann,type = "response")
-stroke_ann_pred <- ifelse(stroke_ann_pred > 0.4, 1, 0)
+stroke_ann_pred <- ifelse(stroke_ann_pred > 0.1, 1, 0)
 confusionMatrix(as.factor(stroke_ann_pred),as.factor(stroke_test_ann$had_stroke),positive = "1")
 
 ```
 
->>>>>>> d0b2f5ac2fe46a3f57a095dce6bcae52db419171
 # Logit
 ```{r}
 logit.model <- glm(had_stroke ~ ., data = stroke, family = "binomial")
@@ -160,7 +158,6 @@ confusionMatrix(as.factor(newprobitmodel),as.factor(newlogitmodel), positive = "
 
 =======
 # SVM
->>>>>>> d0b2f5ac2fe46a3f57a095dce6bcae52db419171
 ```{r}
 library(kernlab)
 
