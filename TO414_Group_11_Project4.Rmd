@@ -51,6 +51,21 @@ test_set = sample(1:nrow(stroke), round(nrow(stroke)*.3))
 stroke_log_test = stroke[test_set,]
 stroke_log_train = stroke[-test_set,]
 
+# Using model.matrix to convert all the factors to dummy variables
+# We are converting all of the factors into dummy variables as the input into knn has to be numeric
+
+strokemm <- as.data.frame(model.matrix(~.-1,stroke))
+str(strokemm)
+
+#Normalize the data
+normalize <- function(x) {
+  return ((x - min(x)) / (max(x) - min(x)))
+}
+
+stroke_random <- strokemm[sample(nrow(strokemm)),]
+# we are going to normalize everything 
+stroke_norm <- as.data.frame(lapply(stroke_random, normalize))
+
 ```
 
 
@@ -83,7 +98,24 @@ summary(new.linear.model)
 # Building an ANN Model
 ```{r}
 library(neuralnet)
+library(caret)
 
+stroke_train_ann <- stroke_norm[-test_set, ]
+stroke_test_ann <- stroke_norm[test_set, ]
+
+
+
+#My ANN model 
+stroke.ann <- neuralnet(formula = had_stroke ~ .,
+                              data = stroke_train_ann, hidden = 1, stepmax = 1e+06)
+
+# Visualize the network topology
+plot(stroke.ann)
+
+# Create a confusion matrix to see model accuracy
+stroke_ann_pred <- predict(stroke.ann,stroke_test_ann,type = "response")
+stroke_ann_pred <- ifelse(stroke_ann_pred > 0.4, 1, 0)
+confusionMatrix(as.factor(stroke_ann_pred),as.factor(stroke_test_ann$had_stroke),positive = "1")
 
 ```
 
