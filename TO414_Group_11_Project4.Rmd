@@ -138,6 +138,22 @@ summary(probit.model)
 #We tried a number of interaction variables but none were significant
 newprobitmodel <- glm(had_stroke ~ age + hypertension + work_type + avg_glucose_level, data = stroke, family = binomial(link="probit"))
 summary(newprobitmodel)
+
+```
+The new probit model that only included the significant variables was the best logistic regression model, as it has the lowest AIC score. We tested different interaction variables, but none were significant. After creating te optimal regression model we are created a prediction model along with a confusion matrix displayed below.
+
+```{r}
+# Predictions and Confusion Matrix Logistic Regression Model
+#Predicting Logistic Regression
+stroke_probit_pred <- predict(newprobitmodel,stroke, type = "response")
+stroke_probit_pred <- ifelse(stroke_probit_pred > 0.50,1,0)
+stroke_probit_pred
+
+
+
+#Confusion Matrix
+library(caret)
+confusionMatrix(as.factor(newprobitmodel),as.factor(newlogitmodel), positive = "1")
 ```
 
 <<<<<<< HEAD
