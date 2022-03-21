@@ -14,7 +14,7 @@ We have chosen a data set that highlights whether or not patients had strokes an
 
 # Importing the Data Set and Cleaning It
 ```{r}
-stroke_data <- read.csv("healthcare-dataset-stroke-data.csv")
+stroke <- read.csv("healthcare-dataset-stroke-data.csv")
 
 #Observing summary and structure of data to identify what we need to clean
 summary(stroke)
@@ -24,8 +24,8 @@ str(stroke)
 stroke$id <- NULL
 
 #Renamed column stroke in order to prevent confusion
-stroke$had_stroke = stroke$stroke
-stroke$stroke = NULL
+stroke$had_stroke <- stroke$stroke
+stroke$stroke <- NULL
 
 #We set the following columns as factors instead of characters
 stroke$gender <- as.factor(stroke$gender)
@@ -71,11 +71,7 @@ stroke_norm <- as.data.frame(lapply(stroke_random, normalize))
 
 # Understanding the Data
 ```{r}
-num_of_strokes = as.factor(stroke$had_stroke)
-summary(num_of_strokes)
-
-num_of_heart_disease = as.factor(stroke$heart_disease)
-summary(num_of_heart_disease)
+table(stroke$had_stroke)
 ```
 
 =======
