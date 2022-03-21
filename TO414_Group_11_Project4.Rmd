@@ -66,12 +66,16 @@ stroke_random <- strokemm[sample(nrow(strokemm)),]
 # we are going to normalize everything 
 stroke_norm <- as.data.frame(lapply(stroke_random, normalize))
 
+#Creating normalized test and train sets
+stroke_train_norm <- stroke_norm[-test_set, ]
+stroke_test_norm <- stroke_norm[test_set, ]
 ```
 
 
 # Understanding the Data
 ```{r}
 table(stroke$had_stroke)
+prop.table(table(stroke$had_stroke))
 ```
 
 =======
@@ -95,22 +99,18 @@ summary(new.linear.model)
 library(neuralnet)
 library(caret)
 
-stroke_train_ann <- stroke_norm[-test_set, ]
-stroke_test_ann <- stroke_norm[test_set, ]
-
-
 
 #My ANN model 
 stroke.ann <- neuralnet(formula = had_stroke ~ .,
-                              data = stroke_train_ann, hidden = 1, stepmax = 1e+06)
+                              data = stroke_train_norm, hidden = 1, stepmax = 1e+06)
 
 # Visualize the network topology
 plot(stroke.ann)
 
 # Create a confusion matrix to see model accuracy
-stroke_ann_pred <- predict(stroke.ann,stroke_test_ann,type = "response")
+stroke_ann_pred <- predict(stroke.ann,stroke_test_norm,type = "response")
 stroke_ann_pred <- ifelse(stroke_ann_pred > 0.1, 1, 0)
-confusionMatrix(as.factor(stroke_ann_pred),as.factor(stroke_test_ann$had_stroke),positive = "1")
+confusionMatrix(as.factor(stroke_ann_pred),as.factor(stroke_test_norm$had_stroke),positive = "1")
 
 ```
 
@@ -168,4 +168,22 @@ table(agreement)
 prop.table(table(agreement))
 ```
 
+# Decision Tree
+```{r}
+#Build the simplest decision tree
+library(C50)
+stroke_decision_tree <- C5.0(stroke_log_train[-11], as.factor(stroke_log_train$had_stroke))
+
+stroke_decision_tree
+summary(stroke_decision_tree)
+plot(stroke_decision_tree)
+
+#Using model to predict
+stroke_dt_pred <- predict(stroke_decision_tree, stroke_log_test)
+#Creating a confusion matrix
+library(caret)
+confusionMatrix(as.factor(stroke_dt_pred),as.factor(stroke_log_test$had_stroke),positive = "1")
+
+table(stroke_dt_pred)
+```
 
