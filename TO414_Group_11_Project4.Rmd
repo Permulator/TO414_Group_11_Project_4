@@ -43,9 +43,34 @@ summary(stroke)
 str(stroke)
 ```
 
+# Understanding the Data / Splitting the Data into Train and Test
+```{r}
+table(stroke$had_stroke)
+prop.table(table(stroke$had_stroke))
+
+#We need to upsample our data because it is a 95:5 split right now and we want it closer to 50:50
+library(caret)
+set.seed(17)
+
+#Splitting the data into test and train
+index <- createDataPartition(stroke$had_stroke,p=0.7,list=FALSE)
+train <- stroke[index,]
+test <- stroke[-index,]
+
+#Training the data up
+trainup <- upSample(x = train[,-ncol(train)],
+                  y=as.factor(train$had_stroke))
+trainup$had_stroke <- trainup$Class
+trainup$Class <- NULL
+
+#Observing the structure of the new trainup set. As seen, it is a 50:50 split now
+table(trainup$had_stroke)
+
+#Should be using "trainup" for train sets and "test" for test sets from now on
+```
+
 ## Splitting Data Into Train and Test
 ```{r}
-set.seed(17)
 test_set = sample(1:nrow(stroke), round(nrow(stroke)*.3))
 
 stroke_log_test = stroke[test_set,]
@@ -71,13 +96,6 @@ stroke_train_norm <- stroke_norm[-test_set, ]
 stroke_test_norm <- stroke_norm[test_set, ]
 ```
 
-
-# Understanding the Data
-```{r}
-table(stroke$had_stroke)
-prop.table(table(stroke$had_stroke))
-```
-
 =======
 # Linear Regression
 ```{r}
@@ -97,7 +115,6 @@ summary(new.linear.model)
 # Building an ANN Model
 ```{r}
 library(neuralnet)
-library(caret)
 
 
 #My ANN model 
@@ -146,7 +163,6 @@ stroke_probit_pred
 
 
 #Confusion Matrix
-library(caret)
 confusionMatrix(as.factor(newprobitmodel),as.factor(newlogitmodel), positive = "1")
 ```
 
