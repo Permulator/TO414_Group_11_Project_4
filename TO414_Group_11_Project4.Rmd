@@ -100,6 +100,8 @@ summary(new.linear.model)
 library(neuralnet)
 library(caret)
 
+stroke_norm$stroke_event = NULL
+stroke_norm$test1 = NULL
 stroke_train_ann <- stroke_norm[-test_set, ]
 stroke_test_ann <- stroke_norm[test_set, ]
 
