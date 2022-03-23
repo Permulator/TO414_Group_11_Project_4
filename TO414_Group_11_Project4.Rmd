@@ -14,7 +14,7 @@ We have chosen a data set that highlights whether or not patients had strokes an
 
 # Importing the Data Set and Cleaning It
 ```{r}
-stroke_data <- read.csv("healthcare-dataset-stroke-data.csv")
+stroke <- read.csv("healthcare-dataset-stroke-data.csv")
 
 #Observing summary and structure of data to identify what we need to clean
 summary(stroke)
@@ -24,8 +24,8 @@ str(stroke)
 stroke$id <- NULL
 
 #Renamed column stroke in order to prevent confusion
-stroke$had_stroke = stroke$stroke
-stroke$stroke = NULL
+stroke$had_stroke <- stroke$stroke
+stroke$stroke <- NULL
 
 #We set the following columns as factors instead of characters
 stroke$gender <- as.factor(stroke$gender)
@@ -66,19 +66,18 @@ stroke_random <- strokemm[sample(nrow(strokemm)),]
 # we are going to normalize everything 
 stroke_norm <- as.data.frame(lapply(stroke_random, normalize))
 
+#Creating normalized test and train sets
+stroke_train_norm <- stroke_norm[-test_set, ]
+stroke_test_norm <- stroke_norm[test_set, ]
 ```
 
 
 # Understanding the Data
 ```{r}
-num_of_strokes = as.factor(stroke$had_stroke)
-summary(num_of_strokes)
-
-num_of_heart_disease = as.factor(stroke$heart_disease)
-summary(num_of_heart_disease)
+table(stroke$had_stroke)
+prop.table(table(stroke$had_stroke))
 ```
 
-<<<<<<< HEAD
 =======
 # Linear Regression
 ```{r}
@@ -100,28 +99,30 @@ summary(new.linear.model)
 library(neuralnet)
 library(caret)
 
+<<<<<<< HEAD
 stroke_norm$stroke_event = NULL
 stroke_norm$test1 = NULL
 stroke_train_ann <- stroke_norm[-test_set, ]
 stroke_test_ann <- stroke_norm[test_set, ]
 
 
+=======
+>>>>>>> b95d1973621a728f19f90070b751414035ca9e30
 
 #My ANN model 
 stroke.ann <- neuralnet(formula = had_stroke ~ .,
-                              data = stroke_train_ann, hidden = 1, stepmax = 1e+06)
+                              data = stroke_train_norm, hidden = 1, stepmax = 1e+06)
 
 # Visualize the network topology
 plot(stroke.ann)
 
 # Create a confusion matrix to see model accuracy
-stroke_ann_pred <- predict(stroke.ann,stroke_test_ann,type = "response")
-stroke_ann_pred <- ifelse(stroke_ann_pred > 0.4, 1, 0)
-confusionMatrix(as.factor(stroke_ann_pred),as.factor(stroke_test_ann$had_stroke),positive = "1")
+stroke_ann_pred <- predict(stroke.ann,stroke_test_norm,type = "response")
+stroke_ann_pred <- ifelse(stroke_ann_pred > 0.1, 1, 0)
+confusionMatrix(as.factor(stroke_ann_pred),as.factor(stroke_test_norm$had_stroke),positive = "1")
 
 ```
 
->>>>>>> d0b2f5ac2fe46a3f57a095dce6bcae52db419171
 # Logit
 ```{r}
 logit.model <- glm(had_stroke ~ ., data = stroke, family = "binomial")
@@ -162,7 +163,6 @@ confusionMatrix(as.factor(newprobitmodel),as.factor(newlogitmodel), positive = "
 
 =======
 # SVM
->>>>>>> d0b2f5ac2fe46a3f57a095dce6bcae52db419171
 ```{r}
 library(kernlab)
 
@@ -177,4 +177,22 @@ table(agreement)
 prop.table(table(agreement))
 ```
 
+# Decision Tree
+```{r}
+#Build the simplest decision tree
+library(C50)
+stroke_decision_tree <- C5.0(stroke_log_train[-11], as.factor(stroke_log_train$had_stroke))
+
+stroke_decision_tree
+summary(stroke_decision_tree)
+plot(stroke_decision_tree)
+
+#Using model to predict
+stroke_dt_pred <- predict(stroke_decision_tree, stroke_log_test)
+#Creating a confusion matrix
+library(caret)
+confusionMatrix(as.factor(stroke_dt_pred),as.factor(stroke_log_test$had_stroke),positive = "1")
+
+table(stroke_dt_pred)
+```
 
