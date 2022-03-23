@@ -67,10 +67,7 @@ trainup$Class <- NULL
 table(trainup$had_stroke)
 
 #Should be using "trainup" for train sets and "test" for test sets from now on
-```
 
-## Splitting Data Into Train and Test
-```{r}
 test_set = sample(1:nrow(stroke), round(nrow(stroke)*.3))
 
 stroke_log_test = stroke[test_set,]
@@ -91,9 +88,15 @@ stroke_random <- strokemm[sample(nrow(strokemm)),]
 # we are going to normalize everything 
 stroke_norm <- as.data.frame(lapply(stroke_random, normalize))
 
-#Creating normalized test and train sets
-stroke_train_norm <- stroke_norm[-test_set, ]
-stroke_test_norm <- stroke_norm[test_set, ]
+#Now need to upsample the normalized/dummy data
+
+train_norm <- stroke_norm[index, ]
+test_norm <- stroke_norm[-index, ]
+
+trainup_norm <- upSample(x = train_norm[,-ncol(train)],
+                  y=as.factor(train_norm$had_stroke))
+trainup_norm$had_stroke <- trainup_norm$Class
+trainup_norm$Class <- NULL
 ```
 
 =======
@@ -116,27 +119,28 @@ summary(new.linear.model)
 ```{r}
 library(neuralnet)
 
-<<<<<<< HEAD
-stroke_norm$stroke_event = NULL
-stroke_norm$test1 = NULL
-stroke_train_ann <- stroke_norm[-test_set, ]
-stroke_test_ann <- stroke_norm[test_set, ]
+##This block of code below may be redundant
+trainup_norm$stroke_event = NULL
+trainup_norm$test1 = NULL
+
+stroke_train_ann <- trainup_norm
+stroke_test_ann <- test_norm
 
 
-=======
->>>>>>> b95d1973621a728f19f90070b751414035ca9e30
+
+## b95d1973621a728f19f90070b751414035ca9e30
 
 #My ANN model 
 stroke.ann <- neuralnet(formula = had_stroke ~ .,
-                              data = stroke_train_norm, hidden = 1, stepmax = 1e+06)
+                              data = trainup_norm, hidden = 1, stepmax = 1e+06)
 
 # Visualize the network topology
 plot(stroke.ann)
 
 # Create a confusion matrix to see model accuracy
-stroke_ann_pred <- predict(stroke.ann,stroke_test_norm,type = "response")
+stroke_ann_pred <- predict(stroke.ann,test_norm,type = "response")
 stroke_ann_pred <- ifelse(stroke_ann_pred > 0.1, 1, 0)
-confusionMatrix(as.factor(stroke_ann_pred),as.factor(stroke_test_norm$had_stroke),positive = "1")
+confusionMatrix(as.factor(stroke_ann_pred),as.factor(test_norm$had_stroke),positive = "1")
 
 ```
 
@@ -182,12 +186,12 @@ confusionMatrix(as.factor(newprobitmodel),as.factor(newlogitmodel), positive = "
 ```{r}
 library(kernlab)
 
-stroke_classifier = ksvm(had_stroke ~., data = stroke_log_train, kernel = "vanilladot")
+stroke_classifier = ksvm(had_stroke ~., data = trainup, kernel = "vanilladot")
 stroke_classifier
 
-stroke_predictions = predict(stroke_classifier, stroke_log_test)
+stroke_predictions = predict(stroke_classifier, test)
 
-table(stroke_predictions, stroke_log_test$had_stroke)
+table(stroke_predictions, test$had_stroke)
 agreement <- stroke_predictions == stroke_log_test$had_stroke
 table(agreement)
 prop.table(table(agreement))
@@ -197,17 +201,17 @@ prop.table(table(agreement))
 ```{r}
 #Build the simplest decision tree
 library(C50)
-stroke_decision_tree <- C5.0(stroke_log_train[-11], as.factor(stroke_log_train$had_stroke))
+stroke_decision_tree <- C5.0(trainup[-11], as.factor(trainup$had_stroke))
 
 stroke_decision_tree
 summary(stroke_decision_tree)
 plot(stroke_decision_tree)
 
 #Using model to predict
-stroke_dt_pred <- predict(stroke_decision_tree, stroke_log_test)
+stroke_dt_pred <- predict(stroke_decision_tree, test)
 #Creating a confusion matrix
 library(caret)
-confusionMatrix(as.factor(stroke_dt_pred),as.factor(stroke_log_test$had_stroke),positive = "1")
+confusionMatrix(as.factor(stroke_dt_pred),as.factor(test$had_stroke),positive = "1")
 
 table(stroke_dt_pred)
 ```
