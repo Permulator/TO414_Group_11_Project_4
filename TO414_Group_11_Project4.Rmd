@@ -92,6 +92,10 @@ trainup_norm <- upSample(x = train_norm[,-ncol(train)],
                   y=as.factor(train_norm$had_stroke))
 trainup_norm$had_stroke <- trainup_norm$Class
 trainup_norm$Class <- NULL
+
+#Checking to ensure data has been split properly
+table(trainup_norm$had_stroke)
+prop.table(table(trainup_norm$had_stroke))
 ```
 
 =======
@@ -114,16 +118,10 @@ summary(new.linear.model)
 ```{r}
 library(neuralnet)
 
-##This block of code below may be redundant
-trainup_norm$stroke_event = NULL
-trainup_norm$test1 = NULL
-
-stroke_train_ann <- trainup_norm
-stroke_test_ann <- test_norm
-
-
-
-## b95d1973621a728f19f90070b751414035ca9e30
+str(trainup_norm$had_stroke)
+trainup_norm$had_stroke <- as.numeric(trainup_norm$had_stroke)-1
+str(trainup_norm$had_stroke)
+table(trainup_norm$had_stroke)
 
 #My ANN model 
 stroke.ann <- neuralnet(formula = had_stroke ~ .,
@@ -134,7 +132,7 @@ plot(stroke.ann)
 
 # Create a confusion matrix to see model accuracy
 stroke_ann_pred <- predict(stroke.ann,test_norm,type = "response")
-stroke_ann_pred <- ifelse(stroke_ann_pred > 0.1, 1, 0)
+stroke_ann_pred <- ifelse(stroke_ann_pred > 0.8, 1, 0)
 confusionMatrix(as.factor(stroke_ann_pred),as.factor(test_norm$had_stroke),positive = "1")
 
 ```
