@@ -118,7 +118,10 @@ summary(new.linear.model)
 ```{r}
 library(neuralnet)
 
+#Checking the structure of trainup_norm to see if we need to convert to numeric
 str(trainup_norm$had_stroke)
+
+#Converting to numeric
 trainup_norm$had_stroke <- as.numeric(trainup_norm$had_stroke)-1
 str(trainup_norm$had_stroke)
 table(trainup_norm$had_stroke)
