@@ -52,16 +52,17 @@ prop.table(table(stroke$had_stroke))
 library(caret)
 set.seed(17)
 
-#Splitting the data into test and train
-index <- createDataPartition(stroke$had_stroke,p=0.7,list=FALSE)
-train <- stroke[index,]
-test <- stroke[-index,]
+strokeup =upSample(x = stroke[,-ncol(stroke)], y = as.factor(stroke$had_stroke))
+strokeup$had_stroke = strokeup$Class
+strokeup$Class = NULL
 
-#Training the data up
-trainup <- upSample(x = train[,-ncol(train)],
-                  y=as.factor(train$had_stroke))
-trainup$had_stroke <- trainup$Class
-trainup$Class <- NULL
+str(str)
+
+
+#Splitting the data into test and train
+index <- createDataPartition(strokeup$had_stroke,p=0.7,list=FALSE)
+trainup <- strokeup[index,]
+testup <- strokeup[-index,]
 
 #Observing the structure of the new trainup set. As seen, it is a 50:50 split now
 table(trainup$had_stroke)
@@ -88,7 +89,7 @@ stroke_norm <- as.data.frame(lapply(stroke_random, normalize))
 train_norm <- stroke_norm[index, ]
 test_norm <- stroke_norm[-index, ]
 
-trainup_norm <- upSample(x = train_norm[,-ncol(train)],
+trainup_norm <- upSample(x = train_norm[,-ncol(trainup)],
                   y=as.factor(train_norm$had_stroke))
 trainup_norm$had_stroke <- trainup_norm$Class
 trainup_norm$Class <- NULL
