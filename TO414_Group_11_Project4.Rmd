@@ -82,7 +82,7 @@ strokeup_norm <- as.data.frame(lapply(strokeup_random, normalize))
 ```{r}
 library(class)
 
-sqrt(nrow(trainup_norm))
+sqrt(nrow(strokeup_norm))
 
 strokeup_label <- strokeup_norm[,"had_stroke1"]
 
@@ -158,8 +158,8 @@ confusionMatrix(as.factor(dt_pred),strokeup$had_stroke,positive = "1")
 ```{r}
 
 #Checking to ensure data has been split properly
-table(trainup_norm$had_stroke)
-prop.table(table(trainup_norm$had_stroke))
+table(strokeup_norm$had_stroke)
+prop.table(table(strokeup_norm$had_stroke))
 
 # Creating Stacked Model
 stroke_combined <- data.frame(logit_pred,knn_pred,ann_pred,svm_pred,dt_pred,strokeup$had_stroke)
