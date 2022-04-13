@@ -14,7 +14,7 @@ We have chosen a data set that highlights whether or not patients had strokes an
 
 # Importing the Data Set and Cleaning It
 ```{r}
-stroke_data <- read.csv("healthcare-dataset-stroke-data.csv")
+stroke <- read.csv("healthcare-dataset-stroke-data.csv")
 
 #Observing summary and structure of data to identify what we need to clean
 summary(stroke)
@@ -24,8 +24,8 @@ str(stroke)
 stroke$id <- NULL
 
 #Renamed column stroke in order to prevent confusion
-stroke$had_stroke = stroke$stroke
-stroke$stroke = NULL
+stroke$had_stroke <- stroke$stroke
+stroke$stroke <- NULL
 
 #We set the following columns as factors instead of characters
 stroke$gender <- as.factor(stroke$gender)
@@ -43,53 +43,51 @@ summary(stroke)
 str(stroke)
 ```
 
-## Splitting Data Into Train and Test
+# Understanding the Data / Splitting the Data into Train and Test
 ```{r}
-set.seed(17)
-test_set = sample(1:nrow(stroke), round(nrow(stroke)*.3))
+table(stroke$had_stroke)
+prop.table(table(stroke$had_stroke))
 
-stroke_log_test = stroke[test_set,]
-stroke_log_train = stroke[-test_set,]
+#We need to upsample our data because it is a 95:5 split right now and we want it closer to 50:50
+library(caret)
+set.seed(17)
+
+strokeup =upSample(x = stroke[,-ncol(stroke)], y = as.factor(stroke$had_stroke))
+strokeup$had_stroke = strokeup$Class
+strokeup$Class = NULL
+
+
+
+
+#Should be using "trainup" for train sets and "test" for test sets from now on
 
 # Using model.matrix to convert all the factors to dummy variables
 # We are converting all of the factors into dummy variables as the input into knn has to be numeric
 
-strokemm <- as.data.frame(model.matrix(~.-1,stroke))
-str(strokemm)
+strokeupmm <- as.data.frame(model.matrix(~.-1,strokeup))
+str(strokeupmm)
 
 #Normalize the data
 normalize <- function(x) {
   return ((x - min(x)) / (max(x) - min(x)))
 }
 
-stroke_random <- strokemm[sample(nrow(strokemm)),]
+strokeup_random <- strokeupmm[sample(nrow(strokeupmm)),]
 # we are going to normalize everything 
-stroke_norm <- as.data.frame(lapply(stroke_random, normalize))
+strokeup_norm <- as.data.frame(lapply(strokeup_random, normalize))
 
 ```
 
-
-# Understanding the Data
+# KNN Model
 ```{r}
-num_of_strokes = as.factor(stroke$had_stroke)
-summary(num_of_strokes)
+library(class)
 
-num_of_heart_disease = as.factor(stroke$heart_disease)
-summary(num_of_heart_disease)
-```
+sqrt(nrow(strokeup_norm))
 
-=======
-# Linear Regression
-```{r}
-linear.model<-lm(had_stroke~.,data=stroke)
+strokeup_label <- strokeup_norm[,"had_stroke1"]
 
-summary(linear.model)
-
-plot(linear.model)
-
-new.linear.model<-lm(had_stroke~age+hypertension+heart_disease+ever_married+work_type+avg_glucose_level,data=stroke)
-
-summary(new.linear.model)
+knn_pred <- knn(train=strokeup_norm,test=strokeup_norm,cl=strokeup_label,k=83)
+confusionMatrix(as.factor(knn_pred),as.factor(strokeup_norm$had_stroke1),positive="1")
 ```
 
 
@@ -97,79 +95,108 @@ summary(new.linear.model)
 # Building an ANN Model
 ```{r}
 library(neuralnet)
-library(caret)
 
-stroke_train_ann <- stroke_norm[-test_set, ]
-stroke_test_ann <- stroke_norm[test_set, ]
-
-
-
-#My ANN model 
-stroke.ann <- neuralnet(formula = had_stroke ~ .,
-                              data = stroke_train_ann, hidden = 1, stepmax = 1e+06)
+# ANN model 
+stroke.ann <- neuralnet(formula = had_stroke1 ~ .,
+                              data = strokeup_norm, hidden = 1, stepmax = 1e+06)
 
 # Visualize the network topology
 plot(stroke.ann)
 
 # Create a confusion matrix to see model accuracy
-stroke_ann_pred <- predict(stroke.ann,stroke_test_ann,type = "response")
-stroke_ann_pred <- ifelse(stroke_ann_pred > 0.1, 1, 0)
-confusionMatrix(as.factor(stroke_ann_pred),as.factor(stroke_test_ann$had_stroke),positive = "1")
+ann_pred <- predict(stroke.ann,strokeup_norm,type = "response")
+ann_pred <- ifelse(ann_pred > 0.5, 1, 0)
+confusionMatrix(as.factor(ann_pred),as.factor(strokeup_norm$had_stroke1),positive = "1")
 
 ```
 
-# Logit
+# Logistic Regression Model
 ```{r}
-logit.model <- glm(had_stroke ~ ., data = stroke, family = "binomial")
+logit.model <- glm(had_stroke ~ ., data = strokeup, family = "binomial")
 summary(logit.model)
 
-newlogitmodel <- glm(had_stroke ~ age + hypertension + avg_glucose_level, data = stroke, family = "binomial")
-summary(newlogitmodel)
+newlogit.model <- glm(had_stroke ~ age + hypertension + avg_glucose_level, data = strokeup, family = "binomial")
+summary(newlogit.model)
+
+logit_pred <- predict(logit.model,strokeup,type="response")
+logit_pred <- ifelse(logit_pred>0.5,1,0)
+confusionMatrix(as.factor(logit_pred),strokeup$had_stroke,positive="1")
 ```
-
-
-# Probit
-```{r}
-probit.model <- glm(had_stroke ~ ., data = stroke, family = binomial(link="probit"))
-summary(probit.model)
-
-#We tried a number of interaction variables but none were significant
-newprobitmodel <- glm(had_stroke ~ age + hypertension + work_type + avg_glucose_level, data = stroke, family = binomial(link="probit"))
-summary(newprobitmodel)
-
-```
-The new probit model that only included the significant variables was the best logistic regression model, as it has the lowest AIC score. We tested different interaction variables, but none were significant. After creating te optimal regression model we are created a prediction model along with a confusion matrix displayed below.
-
-```{r}
-# Predictions and Confusion Matrix Logistic Regression Model
-#Predicting Logistic Regression
-stroke_probit_pred <- predict(newprobitmodel,stroke, type = "response")
-stroke_probit_pred <- ifelse(stroke_probit_pred > 0.50,1,0)
-stroke_probit_pred
-
-
-
-#Confusion Matrix
-library(caret)
-confusionMatrix(as.factor(newprobitmodel),as.factor(newlogitmodel), positive = "1")
-```
-
-<<<<<<< HEAD
 
 =======
 # SVM
 ```{r}
 library(kernlab)
 
-stroke_classifier = ksvm(had_stroke ~., data = stroke_log_train, kernel = "vanilladot")
-stroke_classifier
+stroke.svm = ksvm(had_stroke ~., data = strokeup, kernel = "laplacedot")
+stroke.svm
 
-stroke_predictions = predict(stroke_classifier, stroke_log_test)
-
-table(stroke_predictions, stroke_log_test$had_stroke)
-agreement <- stroke_predictions == stroke_log_test$had_stroke
-table(agreement)
-prop.table(table(agreement))
+svm_pred = predict(stroke.svm, strokeup,type="response")
+confusionMatrix(svm_pred,strokeup$had_stroke,positive="1")
 ```
 
+# Decision Tree
+```{r}
+#Build the simplest decision tree
+library(C50)
+stroke.dt <- C5.0(strokeup[-11], strokeup$had_stroke)
+
+stroke.dt
+summary(stroke.dt)
+plot(stroke.dt)
+
+#Using model to predict
+dt_pred <- predict(stroke.dt,strokeup)
+confusionMatrix(as.factor(dt_pred),strokeup$had_stroke,positive = "1")
+
+
+
+
+```
+
+# Stacked Model
+```{r}
+
+#Checking to ensure data has been split properly
+table(strokeup_norm$had_stroke)
+prop.table(table(strokeup_norm$had_stroke))
+
+# Creating Stacked Model
+stroke_combined <- data.frame(logit_pred,knn_pred,ann_pred,svm_pred,dt_pred,strokeup$had_stroke)
+stroke_combined$had_stroke <- stroke_combined$strokeup.had_stroke
+stroke_combined$strokeup.had_stroke <- NULL
+
+#Splitting the data into test and train
+index <- createDataPartition(stroke_combined$had_stroke,p=0.7,list=FALSE)
+train <- stroke_combined[index,]
+test <- stroke_combined[-index,]
+
+#Creating a cost matrix
+error_cost <- matrix(c(0, 1, 4, 0), nrow = 2)
+error_cost
+
+#Building a new decision tree to make a stacked model
+#Apply the cost matrix to the new decision tree
+
+stroke.stacked.model <- C5.0(train[-6],as.factor(train$had_stroke),costs = error_cost)
+
+summary(stroke.stacked.model)
+
+plot(stroke.stacked.model)
+
+stacked_pred <- predict(stroke.stacked.model,test)
+
+confusionMatrix(stacked_pred,as.factor(test$had_stroke),positive = "1")
+
+```
+
+# Non-Up Sampled Decision Tree
+```{r}
+stroke.dt.noUpsample <- C5.0(stroke[-11],as.factor(stroke$had_stroke))
+
+summary(stroke.dt.noUpsample)
+
+noUpsample_pred <- predict(stroke.dt.noUpsample,stroke)
+confusionMatrix(noUpsample_pred,as.factor(stroke$had_stroke))
+```
 
