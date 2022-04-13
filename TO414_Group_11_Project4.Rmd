@@ -209,11 +209,12 @@ In terms of developing our final stacked model., our initial data set had a 95% 
   o	No False Negatives - IDEAL
 
 >Means to use Model-
-In practice, our model could assist physicians in notifying at-risk patients before they have a stroke. It should not be used entirely as a diagnosis, but as an indicator to physicians that a selected patient fits the criteria of someone that has had a stroke in the past. 
+In practice, our model could assist physicians in notifying at-risk patients before they have a stroke. It should not be used entirely as a diagnosis, but as an indicator to physicians that a selected patient fits the criteria of someone that has had a stroke in the past. This model could be distributed at a larger scale through major hospital systems where doctors can use the model as an alarm system to notify patients who are at risk of a stroke. This could help make the information-gathering process more efficient for doctors, while also giving them the opportunity to reduce patients’ risk of a stroke by being able to identify risk factors early on. 
 
->Potential errors -  
-  o	Upsampling could cause errors – because model is dependent on upsampling it could not be representative of real patient data
-  
-o	It is important to note that our data is based on strokes occurring in the past. This could present potential errors as the characteristics of patients pre/post-stroke could be different. We recognize that it would be greatly beneficial to have data for patients before and after strokes occurred in order to filter out characteristics that arise after their stroke. Additionally it would be easier to compare potentially at-risk patients with pre-stroke patients to highlight characteristics that may have lead up to the stroke. Most of our model is not based on data from real patients due to upsampling, which raises a risk of our final stacked models not being representative of real-world data potentially skewing the data and preidictions our model makes.
-  
+>An example of this in play would be a doctor see’s an at-risk patient. The doctor has the ability to act on this immediately and alert the patient to come in for an appointment. This would allow patients to receive tailored recommendations in terms of lifestyle changes such as dietary changes or new medicine prescriptions to further reduce their risk of stroke.
 
+ 
+>It is important to note that our data is based on strokes occurring in the past. This could present potential errors as the characteristics of patients pre/post-stroke could be different. We recognize that it would be greatly beneficial to have data for patients before and after strokes occurred in order to filter out characteristics that arise after their stroke. Additionally it would be easier to compare potentially at-risk patients with pre-stroke patients to highlight characteristics that may have lead up to the stroke. Most of our model is not based on data from real patients due to upsampling, which raises a risk of our final stacked models not being representative of real-world data potentially skewing the data and preidictions our model makes.
+
+> Black Box Model
+Although this model is very accurate at predicting strokes, it doesn't highlight the particular significance of each predictor. In other words, it doesn't highlight which characteristics specifically are indicative or risks. Therefore if a patient was alerted, the physician wouldn't be able to look at the model and decide which lifestyle characteristics need to be addressed.
