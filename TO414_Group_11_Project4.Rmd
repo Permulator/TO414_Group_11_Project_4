@@ -148,6 +148,10 @@ plot(stroke.dt)
 #Using model to predict
 dt_pred <- predict(stroke.dt,strokeup)
 confusionMatrix(as.factor(dt_pred),strokeup$had_stroke,positive = "1")
+
+
+
+
 ```
 
 # Stacked Model
@@ -184,5 +188,15 @@ stacked_pred <- predict(stroke.stacked.model,test)
 
 confusionMatrix(stacked_pred,as.factor(test$had_stroke),positive = "1")
 
+```
+
+# Non-Up Sampled Decision Tree
+```{r}
+stroke.dt.noUpsample <- C5.0(stroke[-11],as.factor(stroke$had_stroke))
+
+summary(stroke.dt.noUpsample)
+
+noUpsample_pred <- predict(stroke.dt.noUpsample,stroke)
+confusionMatrix(noUpsample_pred,as.factor(stroke$had_stroke))
 ```
 
