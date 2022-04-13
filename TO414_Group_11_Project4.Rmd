@@ -214,7 +214,6 @@ In practice, our model could assist physicians in notifying at-risk patients bef
 >Potential errors -  
   o	Upsampling could cause errors – because model is dependent on upsampling it could not be representative of real patient data
   
-o	It is important to note that our data is based on strokes occurring in the past. This could present potential errors as the characteristics of patients pre/post-stroke could be different. We recognize that it would be greatly beneficial to have data for patients before and after strokes occurred in order to filter out characteristics that arise after their stroke. Additionally it would be easier to compare potentially at-risk patients with pre-stroke patients to highlight characteristics that may have lead up to the stroke
 o	It is important to note that our data is based on strokes occurring in the past. This could present potential errors as the characteristics of patients pre/post-stroke could be different. We recognize that it would be greatly beneficial to have data for patients before and after strokes occurred in order to filter out characteristics that arise after their stroke. Additionally it would be easier to compare potentially at-risk patients with pre-stroke patients to highlight characteristics that may have lead up to the stroke. Most of our model is not based on data from real patients due to upsampling, which raises a risk of our final stacked models not being representative of real-world data potentially skewing the data and preidictions our model makes.
   
 
