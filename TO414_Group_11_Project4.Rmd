@@ -207,8 +207,10 @@ In terms of developing our final stacked model., our initial data set had a 95% 
   o	95/5 split requires upsampling
   o	KNN 99% .98K, ANN 78% .55K, Log same as ANN, SVM 93% .86K, Decision Tree-Up 99% .98K, 99% .98K (BEST)
   o	No False Negatives - IDEAL
+
 >Means to use Model-
-  o	Use to alert patients at risk and not as a form of diagnosis
+In practice, our model could assist physicians in notifying at-risk patients before they have a stroke. It should not be used entirely as a diagnosis, but as an indicator to physicians that a selected patient fits the criteria of someone that has had a stroke in the past. 
+
 >Potential errors -  
   o	Upsampling could cause errors – because model is dependent on upsampling it could not be representative of real patient data
   
