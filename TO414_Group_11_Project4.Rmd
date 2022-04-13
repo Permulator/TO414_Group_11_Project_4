@@ -200,3 +200,15 @@ noUpsample_pred <- predict(stroke.dt.noUpsample,stroke)
 confusionMatrix(noUpsample_pred,as.factor(stroke$had_stroke))
 ```
 
+
+#Conclusion:
+>Development
+  o	95/5 split requires upsampling
+  o	KNN 99% .98K, ANN 78% .55K, Log same as ANN, SVM 93% .86K, Decision Tree-Up 99% .98K, 99% .98K (BEST)
+  o	No False Negatives - IDEAL
+>Means to use Model-
+  o	Use to alert patients at risk and not as a form of diagnosis
+>Potential errors -  
+  o	Upsampling could cause errors – because model is dependent on upsampling it could not be representative of real patient data
+  
+
