@@ -196,7 +196,7 @@ confusionMatrix(noUpsample_pred,as.factor(stroke$had_stroke))
 ```
 
 
-#Conclusion:
+# Conclusion:
 
 Development
 In terms of developing our final stacked model., our initial data set had a 95% of samples categorized as not having a stroke, while only 5% of the sample were categorized as having a stroke. Due to the large discrepancy in the dataset, we believed it was best to upsample the data set to get a more balanced number of responses. Before upsampling the dataset, our initial models struggled with low Kappa scores along with unreliable model accuracies. After upsampling, we were able to produce more accurate models. We wanted to highlight our KNN and Decision Tree models using the upsampled data set as the KNN model had an accuracy of 98.95% with a kappa statistic of 0.979, while the Decision Tree model yielded an accuracy of 98.8% with a Kappa score of 0.9759. More importantly, the Decision Tree model using the upsampled data yielded 0 false negatives, which is remarkable given the number of data points in the sample. The stacked model only drew from three of our individual models: Decision Tree, SVM, and Logistic Regression. We were surprised that the KNN model was not included in the stacked model, however, the stacked model produced the highest accuracy and Kappa scores at 98.9% and 0.9781. More importantly, the stacked model produced 0 false negatives, which can prevent doctors from putting patients at risk by predicting a patient will not have a stroke when there is a high risk of the stroke occurring. This model is important as it has the potential to save a lot of lives if implemented correctly.
